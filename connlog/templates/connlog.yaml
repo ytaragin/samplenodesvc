@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: connlog
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tasks: connlog
+  template:
+    metadata:
+      labels:
+        tasks: connlog
+    spec:
+      containers:
+      - name: connlog
+        image: docker.io/library/connlog:l1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: connlog-svc
+  namespace: {{ .Values.namespace }}
+spec:
+  type: NodePort
+  selector:
+    tasks: connlog
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30004
